@@ -14,7 +14,7 @@ powershell_script "register_tentacle" do
 	tentacle create-instance --instance "#{node['ec2']['instance_id']}" --config "#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config" --console
 	tentacle new-certificate --instance "#{node['ec2']['instance_id']}" --console
 	tentacle configure --instance "#{node.name}" --home "#{node['octopus']['tentacle']['home']}\\" --console
-	tentacle configure --instance "#{node.name]}" --app "#{node['octopus']['tentacle']['home']}\\Applications" --console
+	tentacle configure --instance "#{node.name}" --app "#{node['octopus']['tentacle']['home']}\\Applications" --console
 	tentacle configure --instance "#{node.name}" --port "#{node['octopus']['tentacle']['port']}" --console
 	tentacle configure --instance "#{node.name}" --trust "#{node['octopus']['server']['thumbprint']}" --console
 	tentacle register-with --instance "#{node.name}" --name="#{node.name}" --publicHostName=#{node['ipaddress']} --server=#{node['octopus']['api']['uri']} --apiKey=#{node['octopus']['api']['key']} --role=#{node['octopus']['tentacle']['role']} --environment=#{node.chef_environment} --comms-style TentaclePassive --console
