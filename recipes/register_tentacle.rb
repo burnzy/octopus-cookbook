@@ -11,8 +11,8 @@
 powershell_script "register_tentacle" do
 	code <<-EOH
 	Set-Alias tentacle "#{node['octopus']['tentacle']['install_dir']}\\Tentacle.exe"
-	tentacle create-instance --instance "#{node['ec2']['instance_id']}" --config "#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config" --console
-	tentacle new-certificate --instance "#{node['ec2']['instance_id']}" --console
+	tentacle create-instance --instance "#{node.name}" --config "#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config" --console
+	tentacle new-certificate --instance "#{node.name}" --console
 	tentacle configure --instance "#{node.name}" --home "#{node['octopus']['tentacle']['home']}\\" --console
 	tentacle configure --instance "#{node.name}" --app "#{node['octopus']['tentacle']['home']}\\Applications" --console
 	tentacle configure --instance "#{node.name}" --port "#{node['octopus']['tentacle']['port']}" --console
