@@ -1,43 +1,47 @@
-octopus Cookbook
+octopus cookbook
 ================
-This cookbook installs and configures an octopus tentacle on your chef node.
 
+Installs, configures, and registers an octopus tentacle on your chef node.
 
 Requirements
 ------------
 - `windows` - depends on the windows community cookbook
 
-Attributes
-----------
+### Tentacle Attributes
+The following attributes are used to configure tentacle related attributes, accessible via `node['octopus']['tenacle'][attribute]`.
 
-#### octopus::install_tentacle
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['octopus']['tentacle']['package_name']</tt></td>
-    <td>String</td>
-    <td>The name of the tentacle install package</td>
-    <td><tt>true</tt></td>
-  </tr>
-  <tr>
-    <td><tt>['octopus']['tentacle']['url']</tt></td>
-    <td>String</td>
-    <td>The url location of the tentacle install package</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
+Attribute                    | Description                                                                         | Default
+-----------------------------|-------------------------------------------------------------------------------------|---------------------
+url                          |The download url of the octopus tentacle installation package                        |`http://download.octopusdeploy.com/octopus/Octopus.Tentacle.2.6.0.778-x64.msi`
+checksum                     |The checksum of the tentacle installation package (SHA-256 hash)                     |`cb81f5296f7843c5c04cb20a02793bb14dad50f6453a0f264ebe859e268d8289`
+package_name                 |The package name of the octopus tentacle msi package                                 |`Octopus Deploy Tentacle`
+install_dir                  |The installation directory of where to install the tentacle                          |`C:\Program Files\Octopus Deploy\Tentacle`
+port                         |The port that the tentacle will listen on                                            |`10933`
+home                         |The home directory for the tenacle                                                   |`C:\Octopus`
+role                         |The role that will be assigned to the tentacle                                       |`webserver`
+name                         |The name of the tentacle                                                             |`Tentacle`
+
+### API Attributes
+The following attributes are used to configure octopus api related attributes, accessible via `node['octopus']['api'][attribute]`.
+
+Attribute                    | Description                                                                         | Default
+-----------------------------|-------------------------------------------------------------------------------------|---------------------
+uri                          |The uri of your octopus server's api                                                 |`http://my-octopus-server.com/api`
+key                          |The api key used to register the tentacle with the octopus server                    |`API-XXXXXXXXXXXXXXXXXXXXXXXXXXX`
+
+### Server Attributes
+The following attributes are used to configure server related attributes, accessible via `node['octopus']['server'][attribute]`.
+
+Attribute                    | Description                                                                         | Default
+-----------------------------|-------------------------------------------------------------------------------------|---------------------
+thumbprint                   |The octopus server's thumbprint                                                      |`XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`
 
 
 Contributing
 ------------
 
 1. Fork the repository on Github
-2. Create a named feature branch (like `add_component_x`)
+2. Create a named feature branch (like `add_component_x` or `feature_xyz`)
 3. Write your change
 4. Write tests for your change (if applicable)
 5. Run the tests, ensuring they all pass
@@ -47,4 +51,3 @@ License and Authors
 -------------------
 License: Apache 2.0
 Authors: Michael Burns
-

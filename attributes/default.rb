@@ -16,4 +16,4 @@ default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.2.5.10.39"
 
 # replace with your octopus server api endpoint and key
 default['octopus']['api']['uri'] = "http://my-octopus-server.com/api"
-default['octopus']['api']['key'] = "API-XXXXXXXXMXXXXXXXXXXXXXXXXXX"
+default['octopus']['api']['key'] = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXX"
