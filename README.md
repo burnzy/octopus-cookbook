@@ -8,7 +8,7 @@ Requirements
 - `windows` - depends on the windows community cookbook
 
 ### Tentacle Attributes
-The following attributes are used to configure tentacle related attributes, accessible via `node['octopus']['tenacle'][attribute]`.
+The following attributes are used to configure tentacle related attributes, accessible via `node['octopus']['tentacle'][attribute]`.
 
 Attribute                    | Description                                                                         | Default
 -----------------------------|-------------------------------------------------------------------------------------|---------------------
@@ -17,7 +17,7 @@ checksum                     |The checksum of the tentacle installation package 
 package_name                 |The package name of the octopus tentacle msi package                                 |`Octopus Deploy Tentacle`
 install_dir                  |The installation directory of where to install the tentacle                          |`C:\Program Files\Octopus Deploy\Tentacle`
 port                         |The port that the tentacle will listen on                                            |`10933`
-home                         |The home directory for the tenacle                                                   |`C:\Octopus`
+home                         |The home directory for the tentacle                                                   |`C:\Octopus`
 role                         |The role that will be assigned to the tentacle                                       |`webserver`
 name                         |The name of the tentacle                                                             |`Tentacle`
 
