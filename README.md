@@ -1,5 +1,6 @@
 octopus cookbook
 ================
+[![Cookbook Version](https://img.shields.io/cookbook/v/octopus.svg)](https://supermarket.chef.io/cookbooks/octopus)
 
 Installs, configures, and registers an octopus tentacle on your chef node.
 
