@@ -5,6 +5,7 @@ default['octopus']['tentacle']['install_dir'] = "C:\\Program Files\\Octopus Depl
 default['octopus']['tentacle']['port'] = "10933"
 default['octopus']['tentacle']['home'] = "C:\\Octopus"
 default['octopus']['tentacle']['role'] = "webserver"
+default['octopus']['tentacle']['name'] = "Tentacle"
 
 # replace with your octopus server thumbprint
 default['octopus']['server']['thumbprint'] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -15,4 +16,4 @@ default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.2.5.10.39"
 
 # replace with your octopus server api endpoint and key
 default['octopus']['api']['uri'] = "http://my-octopus-server.com/api"
-default['octopus']['api']['key'] = "API-XXXXXXXXMXXXXXXXXXXXXXXXXXX"
+default['octopus']['api']['key'] = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXX"
