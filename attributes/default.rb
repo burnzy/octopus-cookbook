@@ -6,6 +6,7 @@ default['octopus']['tentacle']['port'] = "10933"
 default['octopus']['tentacle']['home'] = "C:\\Octopus"
 default['octopus']['tentacle']['role'] = "webserver"
 default['octopus']['tentacle']['name'] = "Tentacle"
+default['octopus']['tentacle']['environment'] = "Test"
 
 # replace with your octopus server thumbprint
 default['octopus']['server']['thumbprint'] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
