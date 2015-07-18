@@ -7,18 +7,23 @@
 # All rights reserved - Do Not Redistribute
 #
 
-# download and install the tentacle service  
-windows_package node['octopus']['tentacle']['package_name'] do
-	source node['octopus']['tentacle']['url']
-	checksum node['octopus']['tentacle']['checksum']
-	options "INSTALLLOCATION=\"#{node['octopus']['tentacle']['install_dir']}\""
+tentacle = node['octopus']['tentacle']
+tools = node['octopus']['tools']
+
+# download and install the tentacle service
+windows_package tentacle['package_name'] do
+	source tentacle['url']
+	checksum tentacle['checksum']
+	options "INSTALLLOCATION=\"#{tentacle['install_dir']}\""
 	action :install
 end
 
+octo_exe_path = win_friendly_path("#{tools['home']}/octo.exe")
+
 # download and unzip octopus tools
-windows_zipfile node['octopus']['tools']['home'] do
-	source node['octopus']['tools']['url']
-	checksum node['octopus']['tools']['checksum']
+windows_zipfile tools['home'] do
+	source tools['url']
+	checksum tools['checksum']
 	action :unzip
-	not_if {::File.exists?("#{node['octopus']['tools']['home']}\\Octo.exe")}
+	not_if {::File.exists?(octo_exe_path)
 end
