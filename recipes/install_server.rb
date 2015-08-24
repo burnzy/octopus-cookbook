@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: octopus
-# Recipe:: install_tentacle
+# Recipe:: install_server
 #
 # Author:: Michael Burns (<michael.burns@shawmedia.ca>)
 #
-# Copyright 2014-2015, Shaw Media Inc.
+# Copyright 2015, Shaw Media Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,23 +19,12 @@
 # limitations under the License.
 #
 
-tentacle = node['octopus']['tentacle']
-tools = node['octopus']['tools']
+server = node['octopus']['server']
 
-# download and install the tentacle service
-windows_package tentacle['package_name'] do
-	source tentacle['url']
-	checksum tentacle['checksum']
-	options "INSTALLLOCATION=\"#{tentacle['install_dir']}\""
+# download and install the octopus server
+package server['package_name'] do
+	source server['package_url']
+	checksum server['package_checksum']
+	options "INSTALLLOCATION=\"#{server['install_dir']}\""
 	action :install
-end
-
-octo_exe_path = win_friendly_path("#{tools['home']}/octo.exe")
-
-# download and unzip octopus tools
-windows_zipfile tools['home'] do
-	source tools['url']
-	checksum tools['checksum']
-	action :unzip
-	not_if {::File.exists?(octo_exe_path)}
 end
