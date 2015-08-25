@@ -1,9 +1,9 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "test-kitchen"
-gem "kitchen-ec2"
-gem "winrm-transport"
-gem "berkshelf"
-gem "foodcritic"
-gem "kitchen-vagrant"
-gem "rake"
+gem 'test-kitchen'
+gem 'kitchen-ec2'
+gem 'winrm-transport'
+gem 'berkshelf'
+gem 'foodcritic'
+gem 'kitchen-vagrant'
+gem 'rake'

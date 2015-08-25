@@ -24,14 +24,14 @@ tools = node['octopus']['tools']
 
 # remove the tentacle service
 windows_package tentacle['package_name'] do
-	source tentacle['url']
-	checksum tentacle['checksum']
-	options "INSTALLLOCATION=\"#{tentacle['install_dir']}\""
-	action :remove
+  source tentacle['url']
+  checksum tentacle['checksum']
+  options "INSTALLLOCATION=\"#{tentacle['install_dir']}\""
+  action :remove
 end
 
 # remove the tentacle tools
 directory tools['home'] do
-	recursive true
-	action :delete
+  recursive true
+  action :delete
 end
