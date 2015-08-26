@@ -21,10 +21,10 @@
 
 # assign attributes to local variables
 server = node['octopus']['server']
-octopus_data_bag = node['octopus']['data_bag']
+octopus_data_bag = server['data_bag']
 
 unless octopus_data_bag
-  Chef::Log.warn("node['octopus']['data_bag'] was set to false. Not configuring octopus server or secrets.")
+  Chef::Log.warn("node['octopus']['server']['data_bag'] was set to false. Not configuring octopus server or secrets.")
   return
 end
 
@@ -66,5 +66,5 @@ powershell_script 'create_octopus_server_instance' do
   server license --instance "#{server['name']}" --licenseBase64 "#{node.run_state['octopus_license_base64']}"
   server service --instance "#{server['name']}" --install --reconfigure --start
   eos
-  not_if { ::File.exist?("#{server['home']}\\OctopusServer.config") }
+  not_if { ::File.exist?("#{server['home']}\\OctopusServer.config") || node.run_state['octopus_connection_string'].nil? }
 end
