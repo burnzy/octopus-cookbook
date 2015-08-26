@@ -8,3 +8,4 @@ version '0.2.0'
 supports 'windows'
 
 depends 'windows', '>= 1.2.2'
+depends 'database', '>= 4.0.8'

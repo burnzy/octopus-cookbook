@@ -1,6 +1,7 @@
 ### `octopus cookbook`
-================
+
 [![Cookbook Version](https://img.shields.io/cookbook/v/octopus.svg)](https://supermarket.chef.io/cookbooks/octopus)
+[![Build Status](https://travis-ci.org/burnzy/octopus-cookbook.svg)](https://travis-ci.org/burnzy/octopus-cookbook)
 
 Installs, configures, and registers an octopus tentacle or octopus server on your chef node.
 
