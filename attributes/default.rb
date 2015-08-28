@@ -27,8 +27,9 @@ default['octopus']['server']['sql_dbname'] = 'octopus'
 # default['octopus']['server']['connection_string'] = "Data Source=#{node['octopus']['server']['sql_hostname']};Initial Catalog=#{node['octopus']['server']['sql_dbname']};Integrated Security=False;User ID=#{node['octopus']['server']['sql_username']};Password=#{node['octopus']['server']['sql_password']}"
 default['octopus']['server']['data_bag'] = 'octopus'
 
-default['octopus']['server']['admin_username'] = 'admin'
-default['octopus']['server']['admin_password'] = 'octoadmin@123ABC'
+default['octopus']['server']['authentication_type'] = 'UsernamePassword' # to use active directory, set as 'Domain'
+# default['octopus']['server']['admin_username'] = 'admin'
+# default['octopus']['server']['admin_password'] = 'octoadmin@123ABC'
 default['octopus']['server']['master_key'] = 'master_key_for_backups' # master encryption key for octopus backups
 # default['octopus']['server']['license_base64'] = 'UHV0IHlvdXIgb2N0b3B1cyBsaWNlbnNlIGhlcmU=' # put octopus license here (base64 encoded) - `echo -n 'Put your octopus license here' | openssl base64`
 # PExpY2Vuc2UgU2lnbmF0dXJlPSJnNDk0UUd2UGVUbFgyNGFKeDJyaU9wVnV4UFRpOWtFS0ZvaTFDMzViWXBlNXFJUTR5djB0UWdLYXlMOG9FQVp6YU9tS3dkTVpwNzNHU3A2eUJnNkd5dz09Ij4KICA8TGljZW5zZWRUbz50ZXN0PC9MaWNlbnNlZFRvPgogIDxMaWNlbnNlS2V5PjM5ODkxLTc2MzgwLTc0NDI0LTgxMzE2PC9MaWNlbnNlS2V5PgogIDxWZXJzaW9uPjIuMDwvVmVyc2lvbj4KICA8VmFsaWRGcm9tPjIwMTUtMDgtMjc8L1ZhbGlkRnJvbT4KICA8VmFsaWRUbz4yMDE1LTEwLTExPC9WYWxpZFRvPgogIDxQcm9qZWN0TGltaXQ+VW5saW1pdGVkPC9Qcm9qZWN0TGltaXQ+CiAgPE1hY2hpbmVMaW1pdD5VbmxpbWl0ZWQ8L01hY2hpbmVMaW1pdD4KICA8VXNlckxpbWl0PlVubGltaXRlZDwvVXNlckxpbWl0Pgo8L0xpY2Vuc2U+

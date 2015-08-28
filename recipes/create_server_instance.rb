@@ -43,7 +43,7 @@ if octopus_secrets.nil?
   return
 else
   # make sure all required secrets exist in encrypted data bag
-  required_secrets = %w(sql_user_name sql_user_password sql_admin_name sql_admin_password license_base64)
+  required_secrets = %w(sql_user_username sql_user_password sql_admin_username sql_admin_password admin_username license_base64)
   required_secrets.each do |secret|
     unless octopus_secrets.key?(secret)
       Chef::Log.warn("Found a data bag for octopus secrets, but it was missing \`#{secret}\`")
@@ -57,14 +57,14 @@ else
   end
 
   # create connection string
-  node.run_state['octopus_connection_string'] = "Data Source=#{server['sql_hostname']};Initial Catalog=#{server['sql_dbname']};Integrated Security=False;User ID=#{node.run_state['octopus_sql_user_name']};Password=#{node.run_state['octopus_sql_user_password']}"
+  node.run_state['octopus_connection_string'] = "Data Source=#{server['sql_hostname']};Initial Catalog=#{server['sql_dbname']};Integrated Security=False;User ID=#{node.run_state['octopus_sql_user_username']};Password=#{node.run_state['octopus_sql_user_password']}"
 end
 
 # prepare sql server connection
 sql_server_connection_info = {
   :host => server['sql_hostname'],
   :port => server['sql_port'],
-  :username => node.run_state['octopus_sql_admin_user'],
+  :username => node.run_state['octopus_sql_admin_username'],
   :password => node.run_state['octopus_sql_admin_password']
 }
 
@@ -75,7 +75,7 @@ sql_server_database server['sql_dbname'] do
 end
 
 # create a sql server user and grant access to octopus database
-sql_server_database_user node.run_state['octopus_sql_user_name'] do
+sql_server_database_user node.run_state['octopus_sql_user_username'] do
   connection sql_server_connection_info
   password node.run_state['octopus_sql_user_password']
   database_name server['sql_dbname']
@@ -89,30 +89,18 @@ octopus_server_exe = win_friendly_path("#{server['install_dir']}/octopus.server.
 # generate the octopus web bindings
 octopus_web_bindings = server['web_bindings'].map { |binding| "#{server['web_protocol']}://#{binding}:#{server['web_port']}" }
 
-# # create octopus server instance
-# batch 'create_octopus_server_instance' do
-#   cwd server['install_dir']
-#   code <<-EOH
-#   (
-#     octopus.server.exe create-instance --instance "#{server['name']}" --config "#{server['home']}\\OctopusServer.config" --console
-#     octopus.server.exe configure --instance "#{server['name']}" --home "#{server['home']}" --console
-#     octopus.server.exe configure --instance "#{server['name']}" --storageConnectionString "#{node.run_state['octopus_connection_string']}" --upgradeCheck "False" --upgradeCheckWithStatistics "False" --webAuthenticationMode "UsernamePassword" --webForceSSL "False" --webListenPrefixes "#{octopus_web_bindings.join(',')}" --commsListenPort "10943" --serverNodeName "#{node['hostname']}" --console
-#     octopus.server.exe database --instance "#{server['name']}" --create --console
-#     octopus.server.exe service --instance "#{server['name']}" --stop --console
-#     octopus.server.exe admin --instance "#{server['name']}" --username "#{server['admin_username']}" --password "#{server['admin_password']}" --console
-#     octopus.server.exe license --instance "#{server['name']}" --licenseBase64 "#{node.run_state['octopus_license_base64']}" --console
-#     octopus.server.exe service --instance "#{server['name']}" --install --reconfigure --start --console
-#   ) > #{Chef::Config[:file_cache_path]}\\octopus.server.log
-#   EOH
-# end
-
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" create-instance --instance "OctopusServer" --config "C:\Octopus\OctopusServer.config"
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" configure --instance "OctopusServer" --home "C:\Octopus" --storageConnectionString "Data Source=127.0.0.1;Initial Catalog=octopus_test2;Integrated Security=False;User ID=sa;Password=gp*W-HX8qX" --upgradeCheck "False" --upgradeCheckWithStatistics "False" --webAuthenticationMode "Domain" --webForceSSL "False" --webListenPrefixes "http://localhost:80/" --commsListenPort "10943" --serverNodeName "WIN-7OGE5DCBSN1"
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" database --instance "OctopusServer" --create
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" service --instance "OctopusServer" --stop
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" admin --instance "OctopusServer" --username "vagrant"
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" license --instance "OctopusServer" --licenseBase64 "PExpY2Vuc2UgU2lnbmF0dXJlPSJhMmM3SXBXSWxQMWJNNnlXelIxZ0tSbSt3ZFVRdSt3TThsNVlRTitmSjNUKzNVWkJROEFQazZ4eXU0dHZYRHl4bnEyeDZyOC9KZ0ZVVktKbjBGMjltZz09Ij4KICA8TGljZW5zZWRUbz5UZXN0PC9MaWNlbnNlZFRvPgogIDxMaWNlbnNlS2V5PjA0Njg0LTMzOTcyLTcyNDI1LTUyMjIyPC9MaWNlbnNlS2V5PgogIDxWZXJzaW9uPjIuMDwvVmVyc2lvbj4KICA8VmFsaWRGcm9tPjIwMTUtMDgtMDc8L1ZhbGlkRnJvbT4KICA8VmFsaWRUbz4yMDE1LTA5LTIxPC9WYWxpZFRvPgogIDxQcm9qZWN0TGltaXQ+VW5saW1pdGVkPC9Qcm9qZWN0TGltaXQ+CiAgPE1hY2hpbmVMaW1pdD5VbmxpbWl0ZWQ8L01hY2hpbmVMaW1pdD4KICA8VXNlckxpbWl0PlVubGltaXRlZDwvVXNlckxpbWl0Pgo8L0xpY2Vuc2U+"
-# "C:\Program Files\Octopus Deploy\Octopus\Octopus.Server.exe" service --instance "OctopusServer" --install --reconfigure --start
+# set the admin user command based on authentication_type
+case server['authentication_type']
+when 'UsernamePassword'
+  if node.run_state['octopus_admin_password'].nil?
+    Chef::Log.warn('Could not find an octopus admin password: please set in data bag to use UsernamePassword authentication')
+    return
+  else
+    node.run_state['octopus_admin_cmd'] = "--username \"#{node.run_state['octopus_admin_username']}\" --password \"#{node.run_state['octopus_admin_password']}\""
+  end
+when 'Domain'
+  node.run_state['octopus_admin_cmd'] = "--username \"#{node.run_state['octopus_admin_username']}\""
+end
 
 # create octopus server instance
 powershell_script 'create_octopus_server_instance' do
@@ -123,7 +111,7 @@ powershell_script 'create_octopus_server_instance' do
   server configure --instance "#{server['name']}" --storageConnectionString "#{node.run_state['octopus_connection_string']}" --upgradeCheck "False" --upgradeCheckWithStatistics "False" --webAuthenticationMode "UsernamePassword" --webForceSSL "False" --webListenPrefixes "#{octopus_web_bindings.join(',')}" --commsListenPort "10943" --serverNodeName "#{node['hostname']}" --console
   server database --instance "#{server['name']}" --create --console
   server service --instance "#{server['name']}" --stop --console
-  server admin --instance "#{server['name']}" --username "#{server['admin_username']}" --password "#{server['admin_password']}" --console
+  server admin --instance "#{server['name']}"  "#{node.run_state['octopus_admin_cmd']}" --console
   server license --instance "#{server['name']}" --licenseBase64 "#{node.run_state['octopus_license_base64']}" --console
   server service --instance "#{server['name']}" --install --reconfigure --start --console
   EOH
