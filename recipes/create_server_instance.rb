@@ -19,6 +19,11 @@
 # limitations under the License.
 #
 
+# required for database setup
+chef_gem 'tiny_tds' do
+  action :install
+end
+
 # assign attributes to local variables
 server = node['octopus']['server']
 octopus_data_bag = server['data_bag']
