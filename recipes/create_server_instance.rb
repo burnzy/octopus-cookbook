@@ -21,6 +21,7 @@
 
 # required for database setup
 chef_gem 'tiny_tds' do
+  compile_time false if respond_to?(:compile_time)
   action :install
 end
 
@@ -113,10 +114,10 @@ powershell_script 'create_octopus_server_instance' do
   set-alias server "#{octopus_server_exe}"
   server create-instance --instance "#{server['name']}" --config "#{server['home']}\\OctopusServer.config" --console
   server configure --instance "#{server['name']}" --home "#{server['home']}" --console
-  server configure --instance "#{server['name']}" --storageConnectionString "#{node.run_state['octopus_connection_string']}" --upgradeCheck "False" --upgradeCheckWithStatistics "False" --webAuthenticationMode "UsernamePassword" --webForceSSL "False" --webListenPrefixes "#{octopus_web_bindings.join(',')}" --commsListenPort "10943" --serverNodeName "#{node['hostname']}" --console
+  server configure --instance "#{server['name']}" --storageConnectionString "#{node.run_state['octopus_connection_string']}" --upgradeCheck "False" --upgradeCheckWithStatistics "False" --webAuthenticationMode "#{server['authentication_type']}" --webForceSSL "False" --webListenPrefixes "#{octopus_web_bindings.join(',')}" --commsListenPort "10943" --serverNodeName "#{node['hostname']}" --console
   server database --instance "#{server['name']}" --create --console
   server service --instance "#{server['name']}" --stop --console
-  server admin --instance "#{server['name']}"  "#{node.run_state['octopus_admin_cmd']}" --console
+  server admin --instance "#{server['name']}" #{node.run_state['octopus_admin_cmd']} --console
   server license --instance "#{server['name']}" --licenseBase64 "#{node.run_state['octopus_license_base64']}" --console
   server service --instance "#{server['name']}" --install --reconfigure --start --console
   EOH
