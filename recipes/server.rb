@@ -20,4 +20,4 @@
 #
 
 include_recipe 'octopus::install_server'
-include_recipe 'octopus::create_server_instance'
+include_recipe 'octopus::configure_server'

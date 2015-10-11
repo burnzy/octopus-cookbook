@@ -10,8 +10,8 @@ default['octopus']['tentacle']['role'] = 'webserver'
 default['octopus']['tentacle']['name'] = 'Tentacle'
 default['octopus']['tentacle']['environment'] = node.chef_environment
 
-default['octopus']['server']['package_url'] = 'https://download.octopusdeploy.com/octopus/Octopus.3.0.19.2485-x64.msi'
-default['octopus']['server']['package_checksum'] = '1aeefc7da731a028ff0cf8a9e3cfd557aa365d61992a46445f8d937a3a71258e'
+default['octopus']['server']['package_url'] = 'https://download.octopusdeploy.com/octopus/Octopus.3.0.23.0-x64.msi'
+default['octopus']['server']['package_checksum'] = '55be100bac5e1a1d48d4c6beb2038cd958a704de82b1cf16a0f09836c104d7fd'
 default['octopus']['server']['package_name'] = 'Octopus Deploy Server'
 default['octopus']['server']['install_dir'] = 'C:\Program Files\Octopus Deploy\Octopus'
 default['octopus']['server']['home'] = node['octopus']['home']
@@ -22,17 +22,9 @@ default['octopus']['server']['web_protocol'] = 'http'
 default['octopus']['server']['sql_hostname'] = '127.0.0.1'
 default['octopus']['server']['sql_port'] = '1433'
 default['octopus']['server']['sql_dbname'] = 'octopus'
-# default['octopus']['server']['sql_username'] = 'my_octopus_db_username'
-# default['octopus']['server']['sql_password'] = 'my_octopus_db_password'
-# default['octopus']['server']['connection_string'] = "Data Source=#{node['octopus']['server']['sql_hostname']};Initial Catalog=#{node['octopus']['server']['sql_dbname']};Integrated Security=False;User ID=#{node['octopus']['server']['sql_username']};Password=#{node['octopus']['server']['sql_password']}"
 default['octopus']['server']['data_bag'] = 'octopus'
-
 default['octopus']['server']['authentication_type'] = 'UsernamePassword' # to use active directory, set as 'Domain'
-# default['octopus']['server']['admin_username'] = 'admin'
-# default['octopus']['server']['admin_password'] = 'octoadmin@123ABC'
-default['octopus']['server']['master_key'] = 'master_key_for_backups' # master encryption key for octopus backups
-# default['octopus']['server']['license_base64'] = 'UHV0IHlvdXIgb2N0b3B1cyBsaWNlbnNlIGhlcmU=' # put octopus license here (base64 encoded) - `echo -n 'Put your octopus license here' | openssl base64`
-# PExpY2Vuc2UgU2lnbmF0dXJlPSJnNDk0UUd2UGVUbFgyNGFKeDJyaU9wVnV4UFRpOWtFS0ZvaTFDMzViWXBlNXFJUTR5djB0UWdLYXlMOG9FQVp6YU9tS3dkTVpwNzNHU3A2eUJnNkd5dz09Ij4KICA8TGljZW5zZWRUbz50ZXN0PC9MaWNlbnNlZFRvPgogIDxMaWNlbnNlS2V5PjM5ODkxLTc2MzgwLTc0NDI0LTgxMzE2PC9MaWNlbnNlS2V5PgogIDxWZXJzaW9uPjIuMDwvVmVyc2lvbj4KICA8VmFsaWRGcm9tPjIwMTUtMDgtMjc8L1ZhbGlkRnJvbT4KICA8VmFsaWRUbz4yMDE1LTEwLTExPC9WYWxpZFRvPgogIDxQcm9qZWN0TGltaXQ+VW5saW1pdGVkPC9Qcm9qZWN0TGltaXQ+CiAgPE1hY2hpbmVMaW1pdD5VbmxpbWl0ZWQ8L01hY2hpbmVMaW1pdD4KICA8VXNlckxpbWl0PlVubGltaXRlZDwvVXNlckxpbWl0Pgo8L0xpY2Vuc2U+
+
 default['octopus']['server']['thumbprint'] = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' # replace with your octopus server thumbprint
 
 default['octopus']['tools']['url'] = 'http://download.octopusdeploy.com/octopus-tools/2.5.10.39/OctopusTools.2.5.10.39.zip'

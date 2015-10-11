@@ -21,10 +21,17 @@
 
 server = node['octopus']['server']
 
+# define service
+service 'OctopusDeploy' do
+  supports :status => true, :restart => true
+  action :nothing
+end
+
 # download and install the octopus server
 package server['package_name'] do
   source server['package_url']
   checksum server['package_checksum']
   options "INSTALLLOCATION=\"#{server['install_dir']}\""
   action :install
+  notifies :restart, 'service[OctopusDeploy]', :immediately
 end

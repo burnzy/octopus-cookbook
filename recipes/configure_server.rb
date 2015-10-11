@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: octopus
-# Recipe:: create_server_instance
+# Recipe:: configure_server
 #
 # Author:: Michael Burns (<michael.burns@shawmedia.ca>)
 #
