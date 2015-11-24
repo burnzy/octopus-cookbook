@@ -1,7 +1,7 @@
 octopus CHANGELOG
 =================
 
-0.1.4 (2015-10-10)
+0.1.4 (2015-11-24)
 ------------------
 - [PR 4](https://github.com/burnzy/octopus-cookbook/pull/4) - Versioned packages and support for x64 and x86
 - Cleanup attribute names to make more readable
