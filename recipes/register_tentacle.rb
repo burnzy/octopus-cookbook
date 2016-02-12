@@ -94,7 +94,7 @@ powershell_script "configure_tentacle_on_server" do
 
 		$machineEndpoint = New-Object Octopus.Client.Model.Endpoints.ListeningTentacleEndpointResource
 		$machine.EndPoint = $machineEndpoint
-		$machine.Endpoint.Uri = "https://$publicHostName:$port/" #URI of the machine.
+		$machine.Endpoint.Uri = "https://$($publicHostName):$($port)/" #URI of the machine.
 		$machine.Endpoint.Thumbprint = $expectedThumbprint #Thumbprint of the machine
 
 		New-OctopusResource -Resource $machine
