@@ -11,6 +11,6 @@
 powershell_script "create_tentacle_environment" do
 	code <<-EOH
 	Set-Alias octo "#{node['octopus']['tools']['home']}\\Octo.exe"
-	octo create-environment --name #{node['octopus']['tentacle']['environment']} --ignoreIfExists --server=#{node['octopus']['api']['uri']} --apiKey=#{node['octopus']['api']['key']}
+	octo create-environment --name "#{node['octopus']['tentacle']['environment']}" --ignoreIfExists --server=#{node['octopus']['api']['uri']} --apiKey=#{node['octopus']['api']['key']}
 	EOH
 end
