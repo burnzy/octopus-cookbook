@@ -34,7 +34,7 @@ powershell_script "configure_tentacle_on_server" do
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
-	#{octoposhPath}
+	. "#{octoposhPath}"
 
 	Function Get-CurrentTentacleThumbprint
 	{
@@ -104,7 +104,7 @@ powershell_script "configure_tentacle_on_server" do
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
-	#{octoposhPath}
+	. "#{octoposhPath}"
 
 	Function Get-CurrentTentacleThumbprint
 	{
@@ -139,7 +139,7 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
-	#{octoposhPath}
+	. "#{octoposhPath}"
 
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
 	$octopusURI = '#{node['octopus']['api']['uri']}' # Your Octopus Server address
@@ -154,7 +154,7 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
-	#{octoposhPath}
+	. "#{octoposhPath}"
 
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
 	$octopusURI = '#{node['octopus']['api']['uri']}' # Your Octopus Server address
