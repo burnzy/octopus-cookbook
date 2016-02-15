@@ -51,6 +51,7 @@ powershell_script "configure_tentacle_on_server" do
 	$expectedEnvironments = @('#{node['octopus']['tentacle']['environment']}') -split ',' | %{$_.Trim()} |?{$_}
 	$expectedRoles = @('#{node['octopus']['tentacle']['role']}') -split ',' | %{$_.Trim()} |?{$_}
 	$expectedThumbprint = Get-CurrentTentacleThumbprint
+	$expectedUri = "https://$($publicHostName):$($port)/"
 
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
 
@@ -72,6 +73,13 @@ powershell_script "configure_tentacle_on_server" do
 		if ($expectedThumbprint -ne $machine.Resource.Thumbprint) {
 			write-host "Update machine to use new thumbprint $expectedThumbprint"
 			$machine.Resource.Thumbprint = $expectedThumbprint
+			$machineChanged = $true
+		}
+
+		if ($expectedUri -ne $machine.Resource.Uri) {
+			write-host "Update machine to use new Uri $expectedUri"
+			$machine.Resource.Uri = $expectedUri
+			$machineChanged = $true
 		}
 
 		if ($machineChanged) {
@@ -94,7 +102,7 @@ powershell_script "configure_tentacle_on_server" do
 
 		$machineEndpoint = New-Object Octopus.Client.Model.Endpoints.ListeningTentacleEndpointResource
 		$machine.EndPoint = $machineEndpoint
-		$machine.Endpoint.Uri = "https://$($publicHostName):$($port)/" #URI of the machine.
+		$machine.Endpoint.Uri = $expectedUri #URI of the machine.
 		$machine.Endpoint.Thumbprint = $expectedThumbprint #Thumbprint of the machine
 
 		New-OctopusResource -Resource $machine
@@ -116,13 +124,18 @@ powershell_script "configure_tentacle_on_server" do
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
 	$octopusURI = '#{node['octopus']['api']['uri']}' # Your Octopus Server address
 	$machineName = '#{node['octopus']['tentacle']['name']}"'
+	$publicHostName = '#{node['octopus']['tentacle']['publichostname']}'
+	$port = '#{node['octopus']['tentacle']['port']}'
 
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
 	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine=$null}
 
 	if ($machine) {
 		$expectedThumbprint = Get-CurrentTentacleThumbprint
+		$expectedUri = "https://$($publicHostName):$($port)/"
 		if ($expectedThumbprint -ne $machine.Resource.Thumbprint) {
+			return $false
+		} elseif ($expectedUri -ne $machine.Resource.Uri) {
 			return $false
 		} else {
 			return $true		
