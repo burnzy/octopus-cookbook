@@ -46,7 +46,7 @@ powershell_script "configure_tentacle_on_server" do
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
 	$octopusURI = '#{node['octopus']['api']['uri']}' # Your Octopus Server address
 	$machineName = '#{node['octopus']['tentacle']['name']}"'
-	$publicHostName = '#{node['octopus']['tentacle']['publichostname']}"'
+	$publicHostName = '#{node['octopus']['tentacle']['publichostname']}'
 	$port = '#{node['octopus']['tentacle']['port']}'
 	$expectedEnvironments = @('#{node['octopus']['tentacle']['environment']}') -split ',' | %{$_.Trim()} |?{$_}
 	$expectedRoles = @('#{node['octopus']['tentacle']['role']}') -split ',' | %{$_.Trim()} |?{$_}
