@@ -29,7 +29,8 @@ powershell_script "configure_tentacle_locally" do
 	not_if {::File.exists?("#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config")}
 end
 
-powershell_script "configure_tentacle_on_server" do
+powershell_script 'configure_tentacle_on_server' do
+	guard_interpreter :powershell_script
 	code <<-EOH
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
@@ -91,6 +92,8 @@ powershell_script "configure_tentacle_on_server" do
 
 		if ($machineChanged) {
 			$machine | Update-OctopusResource -Force
+
+			Start-OctopusHealthCheck -MachineName $machineName -Wait -Force
 		}
 	} else {
 		#Create an instance of a Machine Object
@@ -170,7 +173,7 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
 
-	Start-OctopusCalamariUpdate -MachineName $machineName -Wait
+	Start-OctopusCalamariUpdate -MachineName $machineName -Wait -Force
 	EOH
 	action :run
     not_if <<-EOH
@@ -184,7 +187,7 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	$machineName = '#{node['octopus']['tentacle']['name']}'
 	
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
-	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine = $null}
+	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine=$null}
 
 	if ($machine -and $machine.Resource.HasLatestCalamari){
 		return $true
