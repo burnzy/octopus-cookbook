@@ -56,7 +56,7 @@ powershell_script "configure_tentacle_on_server" do
 
 	$expectedEnvironmentIds =  @()
 	$expectedEnvironments | %{
-		$environment = Get-OctopusEnvironment -EnvironmentName $_
+		Try{$environment = Get-OctopusEnvironment -EnvironmentName $_}Catch{$environment = $null}
 
 		if (!($environment)) {
 			throw "There is no environment called $_"
@@ -64,7 +64,7 @@ powershell_script "configure_tentacle_on_server" do
 		$expectedEnvironmentIds += $environment.Id
 	}
 
-	$machine = Get-OctopusMachine -Name $machineName
+	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine = $null}
 
 	if ($machine) {
 		$machineChanged = $false
@@ -118,7 +118,7 @@ powershell_script "configure_tentacle_on_server" do
 	$machineName = '#{node['octopus']['tentacle']['name']}"'
 
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
-	$machine = Get-OctopusMachine -Name $machineName
+	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine=$null}
 
 	if ($machine) {
 		$expectedThumbprint = Get-CurrentTentacleThumbprint
@@ -161,7 +161,7 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	$machineName = '#{node['octopus']['tentacle']['name']}"'
 	
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
-	$machine = Get-OctopusMachine -Name $machineName
+	Try{$machine = Get-OctopusMachine -Name $machineName}Catch{$machine = $null}
 
 	if ($machine -and $machine.Resource.HasLatestCalamari){
 		return $true
