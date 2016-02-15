@@ -70,20 +70,24 @@ powershell_script "configure_tentacle_on_server" do
 	if ($machine) {
 		$machineChanged = $false
 
-		if ($expectedThumbprint -ne $machine.Resource.Thumbprint) {
+		if ($expectedThumbprint -ne $machine.Resource.EndPoint.Thumbprint) {
 			write-host "Update machine to use new thumbprint $expectedThumbprint"
+			$machine.Resource.EndPoint.Thumbprint = $expectedThumbprint
 			$machine.Resource.Thumbprint = $expectedThumbprint
+			$machine.Thumbprint = $expectedThumbprint
 			$machineChanged = $true
 		}
 
-		if ($expectedUri -ne $machine.Resource.Uri) {
+		if ($expectedUri -ne $machine.Resource.EndPoint.Uri) {
 			write-host "Update machine to use new Uri $expectedUri"
+			$machine.Resource.EndPoint.Uri = $expectedUri
 			$machine.Resource.Uri = $expectedUri
+			$machine.Uri = $expectedUri
 			$machineChanged = $true
 		}
 
 		if ($machineChanged) {
-			$machine | Update-OctopusResource
+			$machine | Update-OctopusResource -Force
 		}
 	} else {
 		#Create an instance of a Machine Object
@@ -133,9 +137,9 @@ powershell_script "configure_tentacle_on_server" do
 	if ($machine) {
 		$expectedThumbprint = Get-CurrentTentacleThumbprint
 		$expectedUri = "https://$($publicHostName):$($port)/"
-		if ($expectedThumbprint -ne $machine.Resource.Thumbprint) {
+		if ($expectedThumbprint -ne $machine.Resource.EndPoint.Thumbprint) {
 			return $false
-		} elseif ($expectedUri -ne $machine.Resource.Uri) {
+		} elseif ($expectedUri -ne $machine.Resource.EndPoint.Uri) {
 			return $false
 		} else {
 			return $true		
