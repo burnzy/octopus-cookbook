@@ -118,7 +118,7 @@ powershell_script 'configure_tentacle_on_server' do
 		New-OctopusResource -Resource $machine
 	}
 	EOH
-    not_if <<-EOH
+    not_if <<-EOH2
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
@@ -156,12 +156,12 @@ powershell_script 'configure_tentacle_on_server' do
 	} else {
 		return $false
 	}
-    EOH	
+    EOH2
 end
 
 powershell_script 'configure_tentacle_with_latest_calamari' do
 	guard_interpreter :powershell_script
-	code <<-EOH
+	code <<-EOH3
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
@@ -174,9 +174,9 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey
 
 	Start-OctopusCalamariUpdate -MachineName $machineName -Wait -Force
-	EOH
+	EOH3
 	action :run
-    not_if <<-EOH
+    not_if <<-EOH4
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
 	Add-Type -Path '#{node['octopus']['tentacle']['install_dir']}\\Octopus.Client.dll'
@@ -194,5 +194,5 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 	} else {
 		return $false
 	}
-    EOH
+    EOH4
 end
