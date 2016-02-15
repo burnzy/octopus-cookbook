@@ -38,9 +38,12 @@ powershell_script "configure_tentacle_on_server" do
 
 	Function Get-CurrentTentacleThumbprint
 	{
-		$subject = &'#{node['octopus']['tentacle']['install_dir']}\\Tentacle.exe' show-thumbprint --nologo
-		$result = $subject -creplace '((?:The thumbprint of this Tentacle is: )+)(?<field2>(?:[0-9a-zA-Z]+))', '${field2}'
-		return $result
+		$tentacleConfigPath ='#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config'
+		$tentacleConfig = [xml] (Get-Content $tentacleConfigPath)
+		$thumbprintEntry = $tentacleConfig.'octopus-settings'.set|?{$_.key -eq 'Tentacle.CertificateThumbprint'}
+		$thumbprint = $thumbprintEntry.'#text'
+
+		return $thumbprint
 	}
 
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
@@ -120,9 +123,12 @@ powershell_script "configure_tentacle_on_server" do
 
 	Function Get-CurrentTentacleThumbprint
 	{
-		$subject = &'#{node['octopus']['tentacle']['install_dir']}\\Tentacle.exe' show-thumbprint --nologo
-		$result = $subject -creplace '((?:The thumbprint of this Tentacle is: )+)(?<field2>(?:[0-9a-zA-Z]+))', '${field2}'
-		return $result
+		$tentacleConfigPath ='#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config'
+		$tentacleConfig = [xml] (Get-Content $tentacleConfigPath)
+		$thumbprintEntry = $tentacleConfig.'octopus-settings'.set|?{$_.key -eq 'Tentacle.CertificateThumbprint'}
+		$thumbprint = $thumbprintEntry.'#text'
+
+		return $thumbprint
 	}
 
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
