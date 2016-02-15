@@ -175,7 +175,6 @@ powershell_script 'configure_tentacle_with_latest_calamari' do
 
 	Start-OctopusCalamariUpdate -MachineName $machineName -Wait -Force
 	EOH3
-	action :run
     not_if <<-EOH4
 	$ErrorActionPreference = 'Stop'
 	$ProgressPreference='SilentlyContinue'
