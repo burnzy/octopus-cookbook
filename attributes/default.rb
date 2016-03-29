@@ -10,9 +10,9 @@ default['octopus']['tentacle']['environment'] = node.chef_environment
 
 # Octopus Tools attributes
 default['octopus']['tools']['version'] = "2.5.10.39"
-default['octopus']['tools']['url'] = "http://download.octopusdeploy.com/octopus-tools/#{node['octopus']['tools']['version']}/OctopusTools.#{node['octopus']['tools']['version']}.zip"
+default['octopus']['tools']['url'] = "http://download.octopusdeploy.com/octopus-tools/%{version}/OctopusTools.%{version}.zip"
 default['octopus']['tools']['checksum'] = "0790ed04518e0b50f3000093b4a2b4ad47f0f5c9af269588e82d960813abfd67"
-default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.#{node['octopus']['tools']['version']}"
+default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.%{version}"
 
 # replace with your octopus server thumbprint
 default['octopus']['server']['thumbprint'] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -22,9 +22,9 @@ default['octopus']['api']['uri'] = "http://my-octopus-server.com/api"
 default['octopus']['api']['key'] = "API-XXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 if node['kernel']['machine'] =~ /x86_64/
-  default['octopus']['tentacle']['url'] = "https://download.octopusdeploy.com/octopus/Octopus.Tentacle.#{node['octopus']['tentacle']['version']}-x64.msi"
+  default['octopus']['tentacle']['url'] = "https://download.octopusdeploy.com/octopus/Octopus.Tentacle.%{version}-x64.msi"
   default['octopus']['tentacle']['checksum'] = "cb81f5296f7843c5c04cb20a02793bb14dad50f6453a0f264ebe859e268d8289"
 else
-  default['octopus']['tentacle']['url'] = "https://download.octopusdeploy.com/octopus/Octopus.Tentacle.#{node['octopus']['tentacle']['version']}.msi"
+  default['octopus']['tentacle']['url'] = "https://download.octopusdeploy.com/octopus/Octopus.Tentacle.%{version}.msi"
   default['octopus']['tentacle']['checksum'] = "725222257424115455b4b8e38584aa5112e3be93bb30fea9345544e4ab7a2555"
 end
