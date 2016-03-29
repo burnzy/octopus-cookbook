@@ -26,6 +26,6 @@ api = node['octopus']['api']
 powershell_script "create_environment" do
 	code <<-EOH
 	Set-Alias octo "#{node['octopus']['tools']['home']}\\Octo.exe"
-	octo create-environment --name #{tentacle['environment']} --ignoreIfExists --server=#{api['uri']} --apiKey=#{api['key']}
+	octo create-environment --name "#{node['octopus']['tentacle']['environment']}" --ignoreIfExists --server=#{node['octopus']['api']['uri']} --apiKey=#{node['octopus']['api']['key']}
 	EOH
 end
