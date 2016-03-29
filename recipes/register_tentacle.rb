@@ -2,10 +2,26 @@
 # Cookbook Name:: octopus
 # Recipe:: register_tentacle
 #
-# Copyright 2014, Shaw Media Inc.
+# Author:: Michael Burns (<michael.burns@shawmedia.ca>)
 #
-# All rights reserved - Do Not Redistribute
+# Copyright 2014-2015, Shaw Media Inc.
 #
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+tentacle = node['octopus']['tentacle']
+server = node['octopus']['server']
+api = node['octopus']['api']
 
 # register the tentacle with octopus server
 
@@ -17,16 +33,16 @@ end
 
 powershell_script "configure_tentacle_locally" do
 	code <<-EOH
-	Set-Alias tentacle "#{node['octopus']['tentacle']['install_dir']}\\Tentacle.exe"
-	tentacle create-instance --instance "#{node['octopus']['tentacle']['name']}" --config "#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config" --console
-	tentacle new-certificate --instance "#{node['octopus']['tentacle']['name']}" --console
-	tentacle configure --instance "#{node['octopus']['tentacle']['name']}" --home "#{node['octopus']['tentacle']['home']}\\" --console
-	tentacle configure --instance "#{node['octopus']['tentacle']['name']}" --app "#{node['octopus']['tentacle']['home']}\\Applications" --console
-	tentacle configure --instance "#{node['octopus']['tentacle']['name']}" --port "#{node['octopus']['tentacle']['port']}" --console
-	tentacle configure --instance "#{node['octopus']['tentacle']['name']}" --trust "#{node['octopus']['server']['thumbprint']}" --console
-	tentacle service --instance "#{node['octopus']['tentacle']['name']}" --install --start --console
+	set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
+	tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
+	tentacle new-certificate --instance "#{tentacle['name']}" --console
+	tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
+	tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
+	tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
+	tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+	tentacle service --instance "#{tentacle['name']}" --install --start --console
 	EOH
-	not_if {::File.exists?("#{node['octopus']['tentacle']['home']}\\Tentacle\\Tentacle.config")}
+	not_if {::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.config")}
 end
 
 powershell_script 'configure_tentacle_on_server' do
