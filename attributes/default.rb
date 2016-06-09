@@ -6,6 +6,8 @@ default['octopus']['tentacle']['port'] = "10933"
 default['octopus']['tentacle']['home'] = 'C:\Octopus'
 default['octopus']['tentacle']['role'] = "webserver"
 default['octopus']['tentacle']['name'] = "Tentacle"
+# 'type' can be listening or polling
+default['octopus']['tentacle']['type'] = "listening"
 default['octopus']['tentacle']['environment'] = node.chef_environment
 
 # Octopus Tools attributes
