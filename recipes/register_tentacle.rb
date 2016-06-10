@@ -22,6 +22,7 @@
 tentacle = node['octopus']['tentacle']
 server = node['octopus']['server']
 api = node['octopus']['api']
+puts "the tentacle type is #{tentacle['type']}"
 
 # register the tentacle with octopus server
 powershell_script "register_tentacle" do
@@ -31,13 +32,14 @@ powershell_script "register_tentacle" do
 	  tentacle new-certificate --instance "#{tentacle['name']}" --console
 	  tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
 	  tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
-	  tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
-	  tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-	  if ("#{tentacle['type']}".tolower -eq "listening") {
+	  if ('#{tentacle['type']}' -eq "listening") {
+			tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
+			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
 		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} --role=#{tentacle['role']} --environment=#{tentacle['environment']} --comms-style TentaclePassive --console
 	  }
-	  if ("#{tentacle['type']}".tolower -eq "polling") {
-		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} --role=#{tentacle['role']} --environment=#{tentacle['environment']} --comms-style TentacleActive --server-comms-port 10943 --console
+	  if ('#{tentacle['type']}' -eq "polling") {
+			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+			tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} --role=#{tentacle['role']} --environment=#{tentacle['environment']} --comms-style TentacleActive --force --console
 	  }
 	  tentacle service --instance "#{tentacle['name']}" --install --start --console
 	EOH
