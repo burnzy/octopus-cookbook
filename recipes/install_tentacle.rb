@@ -21,6 +21,7 @@
 
 tentacle = node['octopus']['tentacle']
 tools = node['octopus']['tools']
+calamari = node['octopus']['calamari']
 
 # download and install the tentacle service
 windows_package tentacle['package_name'] do
@@ -38,4 +39,13 @@ windows_zipfile tools['home'] do
   checksum tools['checksum']
   action :unzip
   not_if { ::File.exists?(octo_exe_path) }
+end
+
+calamari_exe_path = win_friendly_path("#{calamari['home']}/calamari.exe")
+# download and unzip octopus tools
+windows_zipfile calamari['home'] do
+  source calamari['url'] % { version: node['octopus']['calamari']['version'] }
+  checksum calamari['checksum']
+  action :unzip
+  not_if { ::File.exists?(calamari_exe_path) }
 end

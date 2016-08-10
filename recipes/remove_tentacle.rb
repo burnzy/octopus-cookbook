@@ -35,3 +35,9 @@ directory tools['home'] do
 	recursive true
 	action :delete
 end
+
+# remove calamari
+directory calamari['home'] do
+	recursive true
+	action :delete
+end
