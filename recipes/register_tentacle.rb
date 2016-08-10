@@ -23,18 +23,36 @@ tentacle = node['octopus']['tentacle']
 server = node['octopus']['server']
 api = node['octopus']['api']
 
+unless (node['octopus']['tentacle']['role']).nil? || (node['octopus']['tentacle']['role']) == 0
+	rolelist = nil
+		(node['octopus']['tentacle']['role']).each do |role|
+		if rolelist.nil? || rolelist == 0
+			rolelist = "--role=#{role}"
+		else
+			rolelist << " --role=#{role}"
+		end
+		end
+	rolelist = rolelist.strip
+end
+
 # register the tentacle with octopus server
 powershell_script "register_tentacle" do
-	code <<-EOH
-	set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
-	tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
-	tentacle new-certificate --instance "#{tentacle['name']}" --console
-	tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
-	tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
-	tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
-	tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-	tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} --role=#{tentacle['role']} --environment=#{tentacle['environment']} --comms-style TentaclePassive --console
-	tentacle service --instance "#{tentacle['name']}" --install --start --console
+  code <<-EOH
+	  set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
+	  tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
+	  tentacle new-certificate --instance "#{tentacle['name']}" --console
+	  tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
+	  tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
+	  if ('#{tentacle['type']}' -eq "listening") {
+			tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
+			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} --comms-style TentaclePassive --console
+	  }
+	  if ('#{tentacle['type']}' -eq "polling") {
+			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+			tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} --comms-style TentacleActive --force --console
+	  }
+	  tentacle service --instance "#{tentacle['name']}" --install --start --console
 	EOH
-	not_if {::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.config")}
+  not_if {::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.config")}
 end

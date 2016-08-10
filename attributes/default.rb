@@ -6,6 +6,8 @@ default['octopus']['tentacle']['port'] = "10933"
 default['octopus']['tentacle']['home'] = 'C:\Octopus'
 default['octopus']['tentacle']['role'] = "webserver"
 default['octopus']['tentacle']['name'] = "Tentacle"
+# 'type' can be listening or polling
+default['octopus']['tentacle']['type'] = "listening"
 default['octopus']['tentacle']['environment'] = node.chef_environment
 
 # Octopus Tools attributes
@@ -13,6 +15,12 @@ default['octopus']['tools']['version'] = "2.5.10.39"
 default['octopus']['tools']['url'] = "http://download.octopusdeploy.com/octopus-tools/%{version}/OctopusTools.%{version}.zip"
 default['octopus']['tools']['checksum'] = "0790ed04518e0b50f3000093b4a2b4ad47f0f5c9af269588e82d960813abfd67"
 default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.%{version}"
+
+# Calamari attributes
+default['octopus']['calamari']['version'] = "3.3.30"
+default['octopus']['calamari']['url'] = "https://github.com/OctopusDeploy/Calamari/archive/Calamari-%{version}.zip"
+default['octopus']['calamari']['checksum'] = "7c9cd3dc34d94cec1dba9956e898280989a0954015f89ad8222ee1b3e36bd57d"
+default['octopus']['calamari']['home'] = "C:\\Octopus\\Calamari\\%{version}"
 
 # replace with your octopus server thumbprint
 default['octopus']['server']['thumbprint'] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
