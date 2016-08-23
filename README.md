@@ -19,6 +19,7 @@ install_dir                  |The installation directory of where to install the
 port                         |The port that the tentacle will listen on                                            |`10933`
 home                         |The home directory for the tentacle                                                   |`C:\Octopus`
 role                         |The role that will be assigned to the tentacle                                       |`webserver`
+environment					 |The environment that will be assigned to the Tentacle                                |`node.chef_environment`
 name                         |The name of the tentacle                                                             |`Tentacle`
 url                          |The download url of the octopus tentacle installation package                        |`https://download.octopusdeploy.com/octopus/Octopus.Tentacle.#{node['octopus']['tentacle']['version']}-x64.msi`
 checksum                     |The checksum of the tentacle installation package (SHA-256 hash)                     |`cb81f5296f7843c5c04cb20a02793bb14dad50f6453a0f264ebe859e268d8289`
