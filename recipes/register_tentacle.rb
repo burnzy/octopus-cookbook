@@ -18,6 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+::Chef::Recipe.send(:include, Chef::Mixin::PowershellOut)
 
 tentacle = node['octopus']['tentacle']
 server = node['octopus']['server']
@@ -35,22 +36,76 @@ unless (node['octopus']['tentacle']['role']).nil? || (node['octopus']['tentacle'
 	rolelist = rolelist.strip
 end
 
+# tenant support (optional)
+tenant_list = nil
+octopusHelpersScript = 'OctopusTenantHelpers.ps1'
+
+cookbook_file "#{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}" do
+  source octopusHelpersScript
+  action :create
+  only_if do
+    node['octopus']['tentacle']['set_tentacle_tenants'] == true 
+  end
+end
+
+ruby_block "autodiscover_tenants" do
+  block do
+    ps_script = "
+      . #{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}
+      $tenantList = GetOctopusTenantNamesForEnvironment -URL #{api['uri']} -APIKey #{api['key']} -EnvironmentName #{tentacle['environment']}
+
+      $tenantParameters = ''
+      $tenantList | foreach { $tenantParameters += [string]::Format('--tenant=''{0}'' ', $_) }
+      return $tenantParameters
+      #return $tenantList
+    "
+    tenant_list = (powershell_out(ps_script)).stdout.chop
+    Chef::Log.info("#################### Tenant parameters were set as: #{tenant_list}")
+  end
+  only_if do
+    node['octopus']['tentacle']['set_tentacle_tenants'] == true  &&
+    !::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.configzzzzzz")
+  end
+end
+
 # register the tentacle with octopus server
 powershell_script "register_tentacle" do
   code <<-EOH
+    #cp $MyInvocation.ScriptName c:\\tools\\temp.ps1 # uncomment if you need to debug this script on a test machine
+    
 	  set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
+
+    # config
 	  tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
 	  tentacle new-certificate --instance "#{tentacle['name']}" --console
 	  tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
 	  tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
-	  if ('#{tentacle['type']}' -eq "listening") {
+	  
+    # tenant auto-detect
+    $tenantParameters = ''
+    if ("#{node['octopus']['tentacle']['set_tentacle_tenants']}" -eq "true") {
+
+      . "#{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}"
+      $tenantNames = GetOctopusTenantNamesForEnvironment -URL "#{api['uri']}" -APIKey "#{api['key']}" -EnvironmentName "#{tentacle['environment']}"
+
+      $tenantNames | foreach {
+          if ($tenantParameters.length > 0) {
+              $tenantParameters += ' '
+          }
+          $tenantParameters += [string]::Format('--tenant="{0}"', $_) 
+      }
+
+    }
+
+    # register
+    if ('#{tentacle['type']}' -eq "listening") {
 			tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
 			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} --comms-style TentaclePassive --console
+		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentaclePassive --console
 	  }
 	  if ('#{tentacle['type']}' -eq "polling") {
 			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-			tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} --comms-style TentacleActive --force --console
+			tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentacleActive --force --console
 	  }
 	  tentacle service --instance "#{tentacle['name']}" --install --start --console
 	EOH
