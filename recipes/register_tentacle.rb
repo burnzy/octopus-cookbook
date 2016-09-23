@@ -82,20 +82,19 @@ powershell_script "register_tentacle" do
 	  tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
 	  
     # tenant auto-detect
-    $tenantParameters = ''
+    $tenantParameters = new-object "System.Collections.Generic.List[string]"
     if ("#{node['octopus']['tentacle']['set_tentacle_tenants']}" -eq "true") {
 
       . "#{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}"
       $tenantNames = GetOctopusTenantNamesForEnvironment -URL "#{api['uri']}" -APIKey "#{api['key']}" -EnvironmentName "#{tentacle['environment']}"
 
       $tenantNames | foreach {
-          if ($tenantParameters.length > 0) {
-              $tenantParameters += ' '
-          }
-          $tenantParameters += [string]::Format('--tenant="{0}"', $_) 
+        if ([string]::IsNullOrWhitespace($_) -eq $false) {
+          $tenantParameters.Add([string]::Format("--tenant=`"{0}`"", $_))
+        }
       }
 
-    }
+    } # end tentacle auto-detect
 
     # register
     if ('#{tentacle['type']}' -eq "listening") {
