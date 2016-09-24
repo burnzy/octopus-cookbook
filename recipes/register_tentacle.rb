@@ -18,7 +18,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-::Chef::Recipe.send(:include, Chef::Mixin::PowershellOut)
 
 tentacle = node['octopus']['tentacle']
 server = node['octopus']['server']
