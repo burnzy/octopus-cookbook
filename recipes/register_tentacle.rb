@@ -72,7 +72,7 @@ powershell_script "register_tentacle" do
         }
       }
 
-    } # end tentacle auto-detect
+    } # end tenant auto-detect
 
     # register
     if ('#{tentacle['type']}' -eq "listening") {
