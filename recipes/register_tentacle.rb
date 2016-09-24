@@ -37,7 +37,6 @@ unless (node['octopus']['tentacle']['role']).nil? || (node['octopus']['tentacle'
 end
 
 # tenant support (optional)
-tenant_list = nil
 octopusHelpersScript = 'OctopusTenantHelpers.ps1'
 
 cookbook_file "#{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}" do
@@ -45,26 +44,6 @@ cookbook_file "#{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}" d
   action :create
   only_if do
     node['octopus']['tentacle']['set_tentacle_tenants'] == true 
-  end
-end
-
-ruby_block "autodiscover_tenants" do
-  block do
-    ps_script = "
-      . #{node['octopus']['scripts']['home']}\\#{octopusHelpersScript}
-      $tenantList = GetOctopusTenantNamesForEnvironment -URL #{api['uri']} -APIKey #{api['key']} -EnvironmentName #{tentacle['environment']}
-
-      $tenantParameters = ''
-      $tenantList | foreach { $tenantParameters += [string]::Format('--tenant=''{0}'' ', $_) }
-      return $tenantParameters
-      #return $tenantList
-    "
-    tenant_list = (powershell_out(ps_script)).stdout.chop
-    Chef::Log.info("#################### Tenant parameters were set as: #{tenant_list}")
-  end
-  only_if do
-    node['octopus']['tentacle']['set_tentacle_tenants'] == true  &&
-    !::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.configzzzzzz")
   end
 end
 
