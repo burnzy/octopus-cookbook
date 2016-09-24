@@ -50,15 +50,15 @@ end
 powershell_script "register_tentacle" do
   code <<-EOH
     #cp $MyInvocation.ScriptName c:\\tools\\temp.ps1 # uncomment if you need to debug this script on a test machine
-    
-	  set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
+  
+    set-alias tentacle "#{tentacle['install_dir']}\\Tentacle.exe"
 
     # config
-	  tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
-	  tentacle new-certificate --instance "#{tentacle['name']}" --console
-	  tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
-	  tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
-	  
+    tentacle create-instance --instance "#{tentacle['name']}" --config "#{tentacle['home']}\\Tentacle\\Tentacle.config" --console
+    tentacle new-certificate --instance "#{tentacle['name']}" --console
+    tentacle configure --instance "#{tentacle['name']}" --home "#{tentacle['home']}\\" --console
+    tentacle configure --instance "#{tentacle['name']}" --app "#{tentacle['home']}\\Applications" --console
+    
     # tenant auto-detect
     $tenantParameters = new-object "System.Collections.Generic.List[string]"
     if ("#{node['octopus']['tentacle']['set_tentacle_tenants']}" -eq "true") {
@@ -76,15 +76,15 @@ powershell_script "register_tentacle" do
 
     # register
     if ('#{tentacle['type']}' -eq "listening") {
-			tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
-			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-		  tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentaclePassive --console
-	  }
-	  if ('#{tentacle['type']}' -eq "polling") {
-			tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
-			tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentacleActive --force --console
-	  }
-	  tentacle service --instance "#{tentacle['name']}" --install --start --console
-	EOH
+      tentacle configure --instance "#{tentacle['name']}" --port "#{tentacle['port']}" --console
+      tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+      tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --publicHostName=#{node['ipaddress']} --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentaclePassive --console
+    }
+    if ('#{tentacle['type']}' -eq "polling") {
+      tentacle configure --instance "#{tentacle['name']}" --trust "#{server['thumbprint']}" --console
+      tentacle register-with --instance "#{tentacle['name']}" --name="#{tentacle['name']}" --server=#{api['uri']} --apiKey=#{api['key']} #{rolelist} --environment=#{tentacle['environment']} $tenantParameters --comms-style TentacleActive --force --console
+    }
+    tentacle service --instance "#{tentacle['name']}" --install --start --console
+  EOH
   not_if {::File.exists?("#{tentacle['home']}\\Tentacle\\Tentacle.config")}
 end
