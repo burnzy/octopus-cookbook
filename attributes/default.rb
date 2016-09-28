@@ -9,12 +9,14 @@ default['octopus']['tentacle']['name'] = "Tentacle"
 # 'type' can be listening or polling
 default['octopus']['tentacle']['type'] = "listening"
 default['octopus']['tentacle']['environment'] = node.chef_environment
+default['octopus']['tentacle']['set_tentacle_tenants'] = true
 
 # Octopus Tools attributes
 default['octopus']['tools']['version'] = "2.5.10.39"
 default['octopus']['tools']['url'] = "http://download.octopusdeploy.com/octopus-tools/%{version}/OctopusTools.%{version}.zip"
 default['octopus']['tools']['checksum'] = "0790ed04518e0b50f3000093b4a2b4ad47f0f5c9af269588e82d960813abfd67"
 default['octopus']['tools']['home'] = "C:\\tools\\OctopusTools.%{version}"
+default['octopus']['scripts']['home'] = "C:\\tools\\"
 
 # replace with your octopus server thumbprint
 default['octopus']['server']['thumbprint'] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
