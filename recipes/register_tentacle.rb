@@ -69,7 +69,7 @@ powershell_script 'configure_tentacle_on_server' do
 	$publicHostName = '#{node['octopus']['tentacle']['publichostname']}'
 	$port = '#{node['octopus']['tentacle']['port']}'
 	$expectedEnvironments = @('#{node['octopus']['tentacle']['environment']}') -split ',' | %{$_.Trim()} |?{$_}
-	$expectedRoles = @('#{node['octopus']['tentacle']['role']}') -split ',' | %{$_.Trim()} |?{$_}
+	$expectedRoles = @('#{node['octopus']['tentacle']['role'].select{|k, v| v[:enable]}.map{|k,v| "#{k}"}.join(',')}') -split ',' | %{$_.Trim()} |?{$_}
 	$expectedThumbprint = Get-CurrentTentacleThumbprint
 	$expectedUri = "https://$($publicHostName):$($port)/"
 
