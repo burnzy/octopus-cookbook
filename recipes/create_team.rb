@@ -1,10 +1,9 @@
 #
 # Cookbook Name:: octopus
-# Recipe:: register_tentacle
+# Recipe:: create_team
 #
-# Author:: Michael Burns (<michael.burns@shawmedia.ca>)
+# Author:: Ivan Marx
 #
-# Copyright 2014-2015, Shaw Media Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,8 +21,6 @@
 tentacle = node['octopus']['tentacle']
 server = node['octopus']['server']
 api = node['octopus']['api']
-
-# register the tentacle with octopus server
 
 octoposhPath = "#{Chef::Config['file_cache_path']}/octoposh.ps1"
 
