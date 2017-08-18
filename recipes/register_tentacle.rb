@@ -105,6 +105,14 @@ powershell_script 'configure_tentacle_on_server' do
 			$machine.Uri = $expectedUri
 			$machineChanged = $true
 		}
+		
+		$expectedEnvironmentIds | %{
+            if(-not $machine.EnvironmentIds.Contains($_))
+            {
+                $machine.Resource.EnvironmentIds.Add($_)
+                $machineChanged = $true
+            }
+        }
 
 		if ($machineChanged) {
 			$machine | Update-OctopusResource -Force
