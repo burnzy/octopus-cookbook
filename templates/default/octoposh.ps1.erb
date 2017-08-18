@@ -714,7 +714,7 @@ function Get-OctopusMachine
                     Thumbprint = $machine.Thumbprint
                     URI = $machine.uri
                     IsDisabled = $machine.IsDisabled
-                    EnvironmentIds = {$machine.EnvironmentIds -split "`r`n"}.Invoke()
+                    EnvironmentIds = {$machine.EnvironmentIds -split "`r`n"}
                     Roles = $machine.Roles
                     HasLatestCalamari = $machine.HasLatestCalamari
                     CommunicationStyle = $Style
