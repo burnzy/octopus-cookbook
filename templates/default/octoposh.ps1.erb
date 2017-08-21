@@ -439,7 +439,7 @@ function Get-OctopusResourceModel
     Param
     (
         # Resource object model
-        [ValidateSet('Environment','Project','ProjectGroup','NugetFeed','LibraryVariableSet','Machine','Lifecycle')]         
+        [ValidateSet('Environment','Project','ProjectGroup','NugetFeed','LibraryVariableSet','Machine','Lifecycle','Team')]         
         [string]$Resource
     )
 
@@ -457,6 +457,7 @@ function Get-OctopusResourceModel
             'LibraryVariableSet' {$o = New-Object Octopus.Client.Model.LibraryVariableSetResource}
             'Machine' {$o = New-Object Octopus.Client.Model.MachineResource}
             'Lifecycle' {$o = New-Object Octopus.Client.Model.LifecycleResource}
+			'Team' {$o = New-Object Octopus.Client.Model.TeamResource}
         }      
     }
     End
@@ -703,16 +704,7 @@ function Get-OctopusMachine
                 Write-Progress -Activity "Getting info from machine: $($machine.name)" -status "$i of $($machines.count)" -percentComplete ($i / $machines.count*100)
                 Write-Verbose "[$($MyInvocation.MyCommand)] Getting info of Machine: $($Machine.name)"
 
-                $e = @() 
-
-                If($environments){
-                    $e = $environments | ?{$_.id -eq $machine.EnvironmentIds}
-                }
-
-                Else{
-                    $e = Get-OctopusResource "api/environments/$($machine.EnvironmentIds)" -header $c.header
-                }
-                
+                                
                 If($Machine.Endpoint.CommunicationStyle -eq 'TentacleActive'){$Style = 'Polling'}            
                 If($Machine.Endpoint.CommunicationStyle -eq 'TentaclePassive'){$Style = 'Listening'}               
 
@@ -722,7 +714,7 @@ function Get-OctopusMachine
                     Thumbprint = $machine.Thumbprint
                     URI = $machine.uri
                     IsDisabled = $machine.IsDisabled
-                    EnvironmentName = $e.name
+                    EnvironmentIds = {$machine.EnvironmentIds -split "`r`n"}
                     Roles = $machine.Roles
                     HasLatestCalamari = $machine.HasLatestCalamari
                     CommunicationStyle = $Style
@@ -788,6 +780,7 @@ function New-OctopusResource
             {$_.getType() -eq [Octopus.Client.Model.LibraryVariableSetResource]} {$res = 'LibraryVariableSets'}
             {$_.getType() -eq [Octopus.Client.Model.MachineResource]} {$res = 'Machines'}
             {$_.getType() -eq [Octopus.Client.Model.LifecycleResource]} {$res = 'Lifecycles'}
+			{$_.getType() -eq [Octopus.Client.Model.TeamResource]} {$res = 'Teams'}
             Default{Throw "Invalid object type: $($_.getType()) `nRun 'Get-OctopusResourceModel -ListAvailable' to get a list of the object types accepted by this cmdlet"}
         }
         Write-Verbose "[$($MyInvocation.MyCommand)] Creating an $($resource.GetType()) object"
@@ -1071,3 +1064,49 @@ function Start-OctopusHealthCheck
         return $List
     }
 }
+
+
+<#
+.Synopsis
+   Gets octopus team by name
+.DESCRIPTION
+   Gets octopus team by name
+.EXAMPLE
+   Get-OctopusTeam -Name "Local - foobar"
+#>
+
+function Get-OctopusTeam
+{
+    [CmdletBinding()]
+    [Alias()]
+    Param
+    (
+        # Environment name        
+        [alias("Name")]        
+        [string[]]$TeamName
+    )
+
+    Begin
+    {
+        $c = New-OctopusConnection
+        $list = @()
+        $i = 1
+    }
+    Process
+    {
+
+        If(!($TeamName -eq $null)){            
+            Write-Verbose "[$($MyInvocation.MyCommand)] Getting team by name: $TeamName" 
+            $list += $c.repository.Teams.FindByName($TeamName)            
+        }                       
+        
+    }
+    End
+    {
+        If($list.count -eq 0){
+            $list = $null
+        }
+        return $List
+    }
+}
+
