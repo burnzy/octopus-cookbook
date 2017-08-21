@@ -40,6 +40,7 @@ powershell_script 'register_tentacle_in_environment_if_not_there' do
 	$apikey = '#{node['octopus']['api']['key']}' # Get this from your profile
 	$octopusURI = '#{node['octopus']['api']['uri']}' # Your Octopus Server address
 	$environments = '#{node['octopus']['environment'].to_json}' | ConvertFrom-Json			
+	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey | out-null
 	
 	foreach($environmentProp in $environments.psobject.Properties)
 	{
@@ -75,6 +76,7 @@ powershell_script 'register_tentacle_in_environment_if_not_there' do
 	$environments = '#{node['octopus']['environment'].to_json}' | ConvertFrom-Json			
 	
 	$machineChanged = $false
+	Set-OctopusConnectionInfo -URL $octopusURI -APIKey $apikey | out-null
 
 	foreach($environmentProp in $environments.psobject.Properties)
 	{
