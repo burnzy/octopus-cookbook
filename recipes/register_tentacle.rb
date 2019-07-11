@@ -27,12 +27,15 @@ unless (node['octopus']['tentacle']['role']).nil? || (node['octopus']['tentacle'
 	rolelist = nil
 		(node['octopus']['tentacle']['role']).each do |role|
 		if rolelist.nil? || rolelist == 0
-			rolelist = "--role=#{role}"
+      rolelist = "--role=#{role}"
+      puts $rolelist
 		else
-			rolelist << " --role=#{role}"
+      rolelist << " --role=#{role}"
+      puts $rolelist
 		end
 		end
-	rolelist = rolelist.strip
+  rolelist = rolelist.strip
+  puts $rolelist
 end
 
 # tenant support (optional)
